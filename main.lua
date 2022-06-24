@@ -73,6 +73,14 @@ function DrawPaddles()
     10,
     40
     )
+
+    love.graphics.rectangle('fill',
+    (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4,
+    (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4,
+    8,
+    8
+    )
+    
 end
 
 function DrawBoard()
