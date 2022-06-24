@@ -63,8 +63,8 @@ function love.load()
     score_p1 = 0
     score_p2 = 0
 
-    paddleLY = 50
-    paddleRY = VIRTUAL_HEIGHT - 50
+    paddleLY = 60
+    paddleRY = 60
 
     love.graphics.setFont(BASE_FONT)
 
@@ -114,8 +114,8 @@ function DrawPaddles()
     )
 
     love.graphics.rectangle('fill',
-    VIRTUAL_WIDTH - (10 + BOARD_BORDER) - 10 ,
-    VIRTUAL_HEIGHT - (40 + BOARD_BORDER) - paddleRY,
+    VIRTUAL_WIDTH - (10 + BOARD_BORDER + 10),
+    VIRTUAL_HEIGHT - (40 + BOARD_BORDER + paddleRY) ,
     10,
     40
     )
