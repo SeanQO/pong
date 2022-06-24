@@ -20,6 +20,7 @@ local VIRTUAL_HEIGHT
 ]]
 local BASE_FONT
 local TOOLS_FONT
+local SCORE_FONT
 
 -- global variable for the game border
 local BOARD_BORDER
@@ -57,6 +58,7 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     BASE_FONT = love.graphics.newFont('000webfont.ttf', 64)
     TOOLS_FONT = love.graphics.newFont('000webfont.ttf', 32)
+    SCORE_FONT = love.graphics.newFont('000webfont.ttf', 256)
 
     BOARD_BORDER = 4
 
@@ -105,6 +107,7 @@ function love.draw()
 
     DrawBoard()
     DrawTitle(0,8)
+    DrawScores()
     DrawPaddles()
     DrawBall()
     DrawFps(8,0)
@@ -113,6 +116,7 @@ function love.draw()
 end
 
 function DrawPaddles()
+    love.graphics.setColor(TableColorOf(255, 255, 255))
     love.graphics.rectangle('fill',
     PADDLE_WIDTH + BOARD_BORDER,
     paddleLY + BOARD_BORDER,
@@ -130,6 +134,7 @@ function DrawPaddles()
 end
 
 function DrawBall()
+    love.graphics.setColor(TableColorOf(255, 255, 255))
     love.graphics.rectangle('fill',
     (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4,
     (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4,
@@ -139,6 +144,7 @@ function DrawBall()
 end
 
 function DrawBoard()
+    love.graphics.setColor(TableColorOf(255, 255, 255))
     love.graphics.rectangle(
         'fill',
         0,
@@ -173,6 +179,7 @@ function DrawBoard()
 end
 
 function DrawTitle(x,y)
+    love.graphics.setColor(TableColorOf(255, 255, 255))
     love.graphics.setFont(BASE_FONT)
     love.graphics.printf(
         'PONG',
@@ -183,7 +190,28 @@ function DrawTitle(x,y)
     )
 end
 
+function DrawScores(x,y)
+    love.graphics.setColor(TableColorOf(77, 77, 77))
+    love.graphics.setFont(SCORE_FONT)
+
+    love.graphics.printf(
+        score_p1,
+        VIRTUAL_WIDTH/4,
+        0,
+        VIRTUAL_WIDTH,
+        'left'
+    )
+    love.graphics.printf(
+        score_p2,
+        VIRTUAL_WIDTH/4,
+        0,
+        VIRTUAL_WIDTH,
+        'center'
+    )
+end
+
 function DrawFps(x,y)
+    love.graphics.setColor(TableColorOf(102, 102, 102))
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
         'FPS: ' .. tostring(love.timer.getFPS( )),
