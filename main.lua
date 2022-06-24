@@ -14,32 +14,52 @@ WINDOW_HEIGHT = windowHeight*.8
 VIRTUAL_WIDTH = 858
 VIRTUAL_HEIGHT = 525
 
-local n 
+BASE_FONT = love.graphics.newFont('PixBob-Lite.ttf', 32)
+TOOLS_FONT = love.graphics.newFont('PixBob-Lite.ttf', 16)
+
+local updateNum 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
+
+    love.graphics.setFont(BASE_FONT)
+
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = false,
         vsync = true
     })
-    n = 0
+    updateNum = 0
 end
 
 function love.update(dt)
-    n = n + 1
+    updateNum = updateNum + 1
 end
 
 function love.draw()
     push:apply('start')
+
+    DrawTitle()
+    DrawUpdates()
+    DrawFps()
+    
+    push:apply('end')
+end
+
+function DrawTitle()
     love.graphics.printf(
         'PONG',
         0,
-        VIRTUAL_HEIGHT / 2 -6,
+        8,
         VIRTUAL_WIDTH,
         'center'
     )
+end
 
-    nString = 'n:' .. n
+function DrawUpdates()
+    local nString = 'upd No ' .. updateNum
+    
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
         nString,
         8,
@@ -47,7 +67,24 @@ function love.draw()
         VIRTUAL_WIDTH,
         'left'
     )
-    push:apply('end')
+    ClearFont()
+end
+
+function DrawFps()
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.graphics.setFont(TOOLS_FONT)
+    love.graphics.printf(
+        'FPS ' .. tostring(love.timer.getFPS( )),
+        8,
+        24,
+        VIRTUAL_WIDTH,
+        'left'
+    )
+    ClearFont()
+end
+
+function ClearFont()
+    love.graphics.setFont(BASE_FONT)
 end
 
 function love.keypressed(key)
