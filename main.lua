@@ -21,12 +21,14 @@ VIRTUAL_HEIGHT = 525
 BASE_FONT = love.graphics.newFont('PixBob-Lite.ttf', 32)
 TOOLS_FONT = love.graphics.newFont('PixBob-Lite.ttf', 16)
 
+-- global variable for the game border
+BOARD_BORDER = 4
+
 --global variable to keep track of the number of updates since the game started runing.
 local updateNum
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
-
     love.graphics.setFont(BASE_FONT)
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -34,6 +36,7 @@ function love.load()
         resizable = false,
         vsync = true
     })
+
     updateNum = 0
 end
 
@@ -43,54 +46,101 @@ end
 
 function love.draw()
     push:apply('start')
-
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+    --love.graphics.clear(40, 45, 52, 255)
+    DrawBoard()
     DrawTitle()
+    DrawPaddles()
     DrawUpdates()
     DrawFps()
     
+   
+
     push:apply('end')
 end
 
+function DrawPaddles()
+    love.graphics.rectangle('fill',
+    10 + BOARD_BORDER,
+    60 + BOARD_BORDER,
+    10,
+    40
+    )
+
+    love.graphics.rectangle('fill',
+    VIRTUAL_WIDTH - (10 + BOARD_BORDER) - 10 ,
+    VIRTUAL_HEIGHT - (40 + BOARD_BORDER) - 60,
+    10,
+    40
+    )
+end
+
+function DrawBoard()
+    love.graphics.rectangle(
+        'fill',
+        0,
+        0,
+        VIRTUAL_WIDTH,
+        BOARD_BORDER
+    )
+
+    love.graphics.rectangle(
+        'fill',
+        0,
+        0,
+        BOARD_BORDER,
+        VIRTUAL_HEIGHT
+    )
+    
+    love.graphics.rectangle(
+        'fill',
+        0,
+        VIRTUAL_HEIGHT - BOARD_BORDER,
+        VIRTUAL_WIDTH,
+        BOARD_BORDER
+    )
+
+    love.graphics.rectangle(
+        'fill',
+        VIRTUAL_WIDTH - BOARD_BORDER,
+        0,
+        BOARD_BORDER,
+        VIRTUAL_HEIGHT
+    )
+end
+
 function DrawTitle()
+    love.graphics.setFont(BASE_FONT)
     love.graphics.printf(
         'PONG',
-        0,
-        8,
-        VIRTUAL_WIDTH,
+        0 + BOARD_BORDER,
+        8 + BOARD_BORDER,
+        VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'center'
     )
 end
 
 function DrawUpdates()
     local nString = 'upd No ' .. updateNum
-    
-    love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
         nString,
-        8,
-        4,
-        VIRTUAL_WIDTH,
+        8 + BOARD_BORDER,
+        4 + BOARD_BORDER,
+        VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'left'
     )
-    ClearFont()
 end
 
 function DrawFps()
-    love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
         'FPS ' .. tostring(love.timer.getFPS( )),
-        8,
-        24,
-        VIRTUAL_WIDTH,
+        8 + BOARD_BORDER,
+        24 + BOARD_BORDER,
+        VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'left'
     )
-    ClearFont()
-end
-
-function ClearFont()
-    love.graphics.setFont(BASE_FONT)
 end
 
 function love.keypressed(key)
