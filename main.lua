@@ -27,6 +27,14 @@ BOARD_BORDER = 4
 --global variable to keep track of the number of updates since the game started runing.
 local updateNum
 
+function TableColorOf(r,g,b)
+    red = r/255
+    green = g/255
+    blue = b/255
+
+    return { red, green, blue} 
+end
+
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setFont(BASE_FONT)
@@ -47,7 +55,7 @@ end
 function love.draw()
     push:apply('start')
     love.graphics.setDefaultFilter('nearest', 'nearest')
-    --love.graphics.clear(40, 45, 52, 255)
+    love.graphics.clear(TableColorOf(26, 26, 26))
     DrawBoard()
     DrawTitle()
     DrawPaddles()
