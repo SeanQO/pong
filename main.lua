@@ -55,9 +55,10 @@ function love.draw()
     love.graphics.clear(TableColorOf(26, 26, 26))
 
     DrawBoard()
-    DrawTitle()
+    DrawTitle(0,8)
     DrawPaddles()
-    DrawFps()
+    DrawBall()
+    DrawFps(8,0)
 
     push:apply('end')
 end
@@ -76,14 +77,16 @@ function DrawPaddles()
     10,
     40
     )
+    
+end
 
+function DrawBall()
     love.graphics.rectangle('fill',
     (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4,
     (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4,
     8,
     8
     )
-    
 end
 
 function DrawBoard()
@@ -120,23 +123,23 @@ function DrawBoard()
     )
 end
 
-function DrawTitle()
+function DrawTitle(x,y)
     love.graphics.setFont(BASE_FONT)
     love.graphics.printf(
         'PONG',
-        0 + BOARD_BORDER,
-        8 + BOARD_BORDER,
+        x + BOARD_BORDER,
+        y + BOARD_BORDER,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'center'
     )
 end
 
-function DrawFps()
+function DrawFps(x,y)
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
         'FPS: ' .. tostring(love.timer.getFPS( )),
-        8 + BOARD_BORDER,
-        0,
+        x + BOARD_BORDER,
+        y,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'left'
     )
