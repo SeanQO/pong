@@ -32,8 +32,8 @@ local SPEED_BALL
 local score_p1
 local score_p2
 
-local PaddleLY
-local PaddleRY
+local paddleLY
+local paddleRY
 
 function TableColorOf(r,g,b)
     local red = r/255
@@ -57,14 +57,14 @@ function love.load()
 
     BOARD_BORDER = 4
 
-    SPEED_PADDLE = 200
+    SPEED_PADDLE = 260
     SPEED_BALL = 200
 
     score_p1 = 0
     score_p2 = 0
 
-    PaddleLY = 50
-    PaddleRY = VIRTUAL_HEIGHT - 50
+    paddleLY = 50
+    paddleRY = VIRTUAL_HEIGHT - 50
 
     love.graphics.setFont(BASE_FONT)
 
@@ -76,7 +76,20 @@ function love.load()
 
 end
 
+--TODO: implement threads
 function love.update(dt)
+    if love.keyboard.isDown('w') then
+        paddleLY = paddleLY - (SPEED_PADDLE * dt)
+    elseif love.keyboard.isDown('s') then
+        paddleLY = paddleLY + (SPEED_PADDLE * dt)
+    end
+
+    if love.keyboard.isDown('up') then
+        paddleRY = paddleRY + (SPEED_PADDLE * dt)
+    elseif love.keyboard.isDown('down') then
+        paddleRY = paddleRY - (SPEED_PADDLE * dt)
+    end
+
 end
 
 function love.draw()
@@ -95,14 +108,14 @@ end
 function DrawPaddles()
     love.graphics.rectangle('fill',
     10 + BOARD_BORDER,
-    60 + BOARD_BORDER,
+    paddleLY + BOARD_BORDER,
     10,
     40
     )
 
     love.graphics.rectangle('fill',
     VIRTUAL_WIDTH - (10 + BOARD_BORDER) - 10 ,
-    VIRTUAL_HEIGHT - (40 + BOARD_BORDER) - 60,
+    VIRTUAL_HEIGHT - (40 + BOARD_BORDER) - paddleRY,
     10,
     40
     )
