@@ -18,8 +18,8 @@ VIRTUAL_HEIGHT = 525
     https://www.dafont.com/es/bitmap.php
     https://dl.dafont.com/dl/?f=pixbob_lite - Pixbob Lite from Habib Khoirul Fajar
 ]]
-BASE_FONT = love.graphics.newFont('PixBob-Lite.ttf', 32)
-TOOLS_FONT = love.graphics.newFont('PixBob-Lite.ttf', 16)
+BASE_FONT = love.graphics.newFont('000webfont.ttf', 64)
+TOOLS_FONT = love.graphics.newFont('000webfont.ttf', 32)
 
 -- global variable for the game border
 BOARD_BORDER = 4
@@ -28,9 +28,9 @@ BOARD_BORDER = 4
 local updateNum
 
 function TableColorOf(r,g,b)
-    red = r/255
-    green = g/255
-    blue = b/255
+    local red = r/255
+    local green = g/255
+    local blue = b/255
 
     return { red, green, blue} 
 end
@@ -45,24 +45,19 @@ function love.load()
         vsync = true
     })
 
-    updateNum = 0
 end
 
 function love.update(dt)
-    updateNum = updateNum + 1
 end
 
 function love.draw()
     push:apply('start')
-    love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.clear(TableColorOf(26, 26, 26))
+
     DrawBoard()
     DrawTitle()
     DrawPaddles()
-    DrawUpdates()
     DrawFps()
-    
-   
 
     push:apply('end')
 end
@@ -136,24 +131,12 @@ function DrawTitle()
     )
 end
 
-function DrawUpdates()
-    local nString = 'upd No ' .. updateNum
-    love.graphics.setFont(TOOLS_FONT)
-    love.graphics.printf(
-        nString,
-        8 + BOARD_BORDER,
-        4 + BOARD_BORDER,
-        VIRTUAL_WIDTH - (BOARD_BORDER*2),
-        'left'
-    )
-end
-
 function DrawFps()
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
-        'FPS ' .. tostring(love.timer.getFPS( )),
+        'FPS: ' .. tostring(love.timer.getFPS( )),
         8 + BOARD_BORDER,
-        24 + BOARD_BORDER,
+        0,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'left'
     )
