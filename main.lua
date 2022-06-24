@@ -24,6 +24,9 @@ local TOOLS_FONT
 -- global variable for the game border
 local BOARD_BORDER
 
+local PADDLE_WIDTH
+local PADDLE_HEIGHT
+
 -- Speed of the moving paddles
 local SPEED_PADDLE
 -- Speed of the moving ball
@@ -57,6 +60,9 @@ function love.load()
 
     BOARD_BORDER = 4
 
+    PADDLE_WIDTH = 10
+    PADDLE_HEIGHT = 40
+
     SPEED_PADDLE = 260
     SPEED_BALL = 200
 
@@ -79,9 +85,10 @@ end
 --TODO: implement threads
 function love.update(dt)
     if love.keyboard.isDown('w') then
-        paddleLY = paddleLY - (SPEED_PADDLE * dt)
+        paddleLY = math.max(0, paddleLY - (SPEED_PADDLE * dt))
+
     elseif love.keyboard.isDown('s') then
-        paddleLY = paddleLY + (SPEED_PADDLE * dt)
+        paddleLY = math.min((VIRTUAL_HEIGHT-BOARD_BORDER-PADDLE_HEIGHT),paddleLY + (SPEED_PADDLE * dt))
     end
 
     if love.keyboard.isDown('up') then
@@ -109,15 +116,15 @@ function DrawPaddles()
     love.graphics.rectangle('fill',
     10 + BOARD_BORDER,
     paddleLY + BOARD_BORDER,
-    10,
-    40
+    PADDLE_WIDTH,
+    PADDLE_HEIGHT
     )
 
     love.graphics.rectangle('fill',
     VIRTUAL_WIDTH - (10 + BOARD_BORDER + 10),
     VIRTUAL_HEIGHT - (40 + BOARD_BORDER + paddleRY) ,
-    10,
-    40
+    PADDLE_WIDTH,
+    PADDLE_HEIGHT
     )
     
 end
