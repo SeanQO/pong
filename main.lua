@@ -61,7 +61,7 @@ function love.load()
     BOARD_BORDER = 4
 
     PADDLE_WIDTH = 10
-    PADDLE_HEIGHT = 40
+    PADDLE_HEIGHT = 50
 
     SPEED_PADDLE = 260
     SPEED_BALL = 200
@@ -92,9 +92,9 @@ function love.update(dt)
     end
 
     if love.keyboard.isDown('up') then
-        paddleRY = paddleRY + (SPEED_PADDLE * dt)
+        paddleRY = math.min((VIRTUAL_HEIGHT-BOARD_BORDER-PADDLE_HEIGHT),paddleRY + (SPEED_PADDLE * dt))
     elseif love.keyboard.isDown('down') then
-        paddleRY = paddleRY - (SPEED_PADDLE * dt)
+        paddleRY = math.max(0, paddleRY - (SPEED_PADDLE * dt))
     end
 
 end
@@ -114,15 +114,15 @@ end
 
 function DrawPaddles()
     love.graphics.rectangle('fill',
-    10 + BOARD_BORDER,
+    PADDLE_WIDTH + BOARD_BORDER,
     paddleLY + BOARD_BORDER,
     PADDLE_WIDTH,
     PADDLE_HEIGHT
     )
 
     love.graphics.rectangle('fill',
-    VIRTUAL_WIDTH - (10 + BOARD_BORDER + 10),
-    VIRTUAL_HEIGHT - (40 + BOARD_BORDER + paddleRY) ,
+    VIRTUAL_WIDTH - (PADDLE_WIDTH + BOARD_BORDER + PADDLE_WIDTH),
+    VIRTUAL_HEIGHT - (PADDLE_HEIGHT + BOARD_BORDER + paddleRY) ,
     PADDLE_WIDTH,
     PADDLE_HEIGHT
     )
