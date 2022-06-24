@@ -3,29 +3,37 @@
     'push is a simple resolution-handling library that allows you to focus on making your game with a fixed resolution.'
     push library is used to render a game with a fixed virtual resolution. The desired retro low res render is keept instead of however large the user window is. 
 ]]
-push = require 'push'
+local push = require 'push'
 
 --game real window is reduced to present the game in window mode with 80% the size of the user screen
-local windowWidth, windowHeight = love.window.getDesktopDimensions()
-WINDOW_WIDTH = windowWidth*.8
-WINDOW_HEIGHT = windowHeight*.8
+
+local WINDOW_WIDTH
+local WINDOW_HEIGHT
 
 --game actual render window size, set to give retro vibes at a lower quality( values are the original pong resolution 858x525)
-VIRTUAL_WIDTH = 858
-VIRTUAL_HEIGHT = 525
+local VIRTUAL_WIDTH
+local VIRTUAL_HEIGHT
 
 --[[
     https://www.dafont.com/es/bitmap.php
     https://dl.dafont.com/dl/?f=pixbob_lite - Pixbob Lite from Habib Khoirul Fajar
 ]]
-BASE_FONT = love.graphics.newFont('000webfont.ttf', 64)
-TOOLS_FONT = love.graphics.newFont('000webfont.ttf', 32)
+local BASE_FONT
+local TOOLS_FONT
 
 -- global variable for the game border
-BOARD_BORDER = 4
+local BOARD_BORDER
 
---global variable to keep track of the number of updates since the game started runing.
-local updateNum
+-- Speed of the moving paddles
+local SPEED_PADDLE
+-- Speed of the moving ball
+local SPEED_BALL
+
+local score_p1
+local score_p2
+
+local PaddleLY
+local PaddleRY
 
 function TableColorOf(r,g,b)
     local red = r/255
@@ -36,7 +44,28 @@ function TableColorOf(r,g,b)
 end
 
 function love.load()
+    local userWindowWidth, userWindowHeight = love.window.getDesktopDimensions()
+    WINDOW_WIDTH = userWindowWidth*.8
+    WINDOW_HEIGHT = userWindowHeight*.8
+
+    VIRTUAL_WIDTH = 858
+    VIRTUAL_HEIGHT = 525
+
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    BASE_FONT = love.graphics.newFont('000webfont.ttf', 64)
+    TOOLS_FONT = love.graphics.newFont('000webfont.ttf', 32)
+
+    BOARD_BORDER = 4
+
+    SPEED_PADDLE = 200
+    SPEED_BALL = 200
+
+    score_p1 = 0
+    score_p2 = 0
+
+    PaddleLY = 50
+    PaddleRY = VIRTUAL_HEIGHT - 50
+
     love.graphics.setFont(BASE_FONT)
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -146,6 +175,9 @@ function DrawFps(x,y)
 end
 
 function love.keypressed(key)
+    if key == 'escape' then
+        love.event.quit()
+    end
     if key == 'escape' then
         love.event.quit()
     end
