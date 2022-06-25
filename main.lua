@@ -28,6 +28,9 @@ local BOARD_BORDER
 local PADDLE_WIDTH
 local PADDLE_HEIGHT
 
+local BALL_WIDTH
+local BALL_HEIGHT
+
 -- Speed of the moving paddles
 local SPEED_PADDLE
 -- Speed of the moving ball
@@ -39,6 +42,11 @@ local score_p2
 local paddleLY
 local paddleRY
 
+local ballX
+local ballY
+
+local gameState
+
 function TableColorOf(r,g,b)
     local red = r/255
     local green = g/255
@@ -49,6 +57,9 @@ end
 
 function love.load()
     local userWindowWidth, userWindowHeight = love.window.getDesktopDimensions()
+
+    gameState = false
+
     WINDOW_WIDTH = userWindowWidth*.8
     WINDOW_HEIGHT = userWindowHeight*.8
 
@@ -65,14 +76,22 @@ function love.load()
     PADDLE_WIDTH = 10
     PADDLE_HEIGHT = 50
 
+    BALL_WIDTH = 8
+    BALL_HEIGHT = 8
+
     SPEED_PADDLE = 260
     SPEED_BALL = 200
 
     score_p1 = 0
     score_p2 = 0
 
+    ballX = (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4
+    ballY = (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4
+
     paddleLY = 60
     paddleRY = 60
+
+
 
     love.graphics.setFont(BASE_FONT)
 
@@ -106,11 +125,12 @@ function love.draw()
     love.graphics.clear(TableColorOf(26, 26, 26))
 
     DrawBoard()
-    DrawTitle(0,8)
+    DrawTitle()
     DrawScores()
     DrawPaddles()
     DrawBall()
-    DrawFps(8,0)
+    DrawFps()
+    DrawGameState()
 
     push:apply('end')
 end
@@ -136,10 +156,10 @@ end
 function DrawBall()
     love.graphics.setColor(TableColorOf(255, 255, 255))
     love.graphics.rectangle('fill',
-    (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4,
-    (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4,
-    8,
-    8
+    ballX,
+    ballY,
+    BALL_WIDTH,
+    BALL_HEIGHT
     )
 end
 
@@ -178,19 +198,31 @@ function DrawBoard()
     )
 end
 
-function DrawTitle(x,y)
+function DrawGameState()
+    love.graphics.setColor(TableColorOf(102, 102, 102))
+    love.graphics.setFont(TOOLS_FONT)
+    love.graphics.printf(
+        'gs: ' .. tostring(gameState),
+        8 + BOARD_BORDER,
+        14,
+        VIRTUAL_WIDTH - (BOARD_BORDER*2),
+        'left'
+    )
+end
+
+function DrawTitle()
     love.graphics.setColor(TableColorOf(255, 255, 255))
     love.graphics.setFont(BASE_FONT)
     love.graphics.printf(
         'PONG',
-        x + BOARD_BORDER,
-        y + BOARD_BORDER,
+        0 + BOARD_BORDER,
+        8 + BOARD_BORDER,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'center'
     )
 end
 
-function DrawScores(x,y)
+function DrawScores()
     love.graphics.setColor(TableColorOf(77, 77, 77))
     love.graphics.setFont(SCORE_FONT)
 
@@ -210,13 +242,13 @@ function DrawScores(x,y)
     )
 end
 
-function DrawFps(x,y)
+function DrawFps()
     love.graphics.setColor(TableColorOf(102, 102, 102))
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
         'FPS: ' .. tostring(love.timer.getFPS( )),
-        x + BOARD_BORDER,
-        y,
+        8 + BOARD_BORDER,
+        0,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
         'left'
     )
@@ -225,5 +257,13 @@ end
 function love.keypressed(key)
     if key == 'escape' then
         love.event.quit()
+    end
+
+    if key == 'enter' then
+        gameState = true
+    end
+
+    if key == 'return' then
+        gameState = false
     end
 end
