@@ -88,6 +88,9 @@ function love.load()
     ballX = (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4
     ballY = (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4
 
+    ballDX = math.random(2) == 1 and SPEED_BALL or (-SPEED_BALL) 
+    ballDY = math.random(2) == 1 and SPEED_BALL or (-SPEED_BALL)
+
     paddleLY = 60
     paddleRY = 60
 
@@ -116,6 +119,12 @@ function love.update(dt)
         paddleRY = math.min((VIRTUAL_HEIGHT-BOARD_BORDER-PADDLE_HEIGHT),paddleRY + (SPEED_PADDLE * dt))
     elseif love.keyboard.isDown('down') then
         paddleRY = math.max(0, paddleRY - (SPEED_PADDLE * dt))
+    end
+
+
+    if gameState then
+        ballX = ballX + (ballDX*dt) 
+        ballY = ballY + (ballY*dt)
     end
 
 end
@@ -259,11 +268,12 @@ function love.keypressed(key)
         love.event.quit()
     end
 
-    if key == 'enter' then
+    if key == 'return' then
         gameState = true
+        
     end
 
-    if key == 'return' then
+    if key == 'backspace' then
         gameState = false
     end
 end
