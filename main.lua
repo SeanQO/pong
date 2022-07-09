@@ -45,8 +45,16 @@ local paddleRY
 local ballX
 local ballY
 
-local gameState
 
+local ballDX
+local ballDY
+local sin
+local cos
+
+local gameState
+local START
+local PLAYING
+local PAUSED
 function TableColorOf(r,g,b)
     local red = r/255
     local green = g/255
@@ -58,7 +66,10 @@ end
 function love.load()
     local userWindowWidth, userWindowHeight = love.window.getDesktopDimensions()
 
-    gameState = false
+    START = 'start'
+    PLAYING = 'playing'
+    PAUSED = 'paused'
+    gameState = START
 
     WINDOW_WIDTH = userWindowWidth*.8
     WINDOW_HEIGHT = userWindowHeight*.8
@@ -88,8 +99,11 @@ function love.load()
     ballX = (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4
     ballY = (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4
 
-    ballDX = math.random(2) == 1 and SPEED_BALL or (-SPEED_BALL) 
-    ballDY = math.random(2) == 1 and SPEED_BALL or (-SPEED_BALL)
+    cos = math.cos(45)
+    sin = math.sin(45)
+
+    ballDX = 0
+    ballDY = 0
 
     paddleLY = 60
     paddleRY = 60
@@ -108,24 +122,34 @@ end
 
 --TODO: implement threads
 function love.update(dt)
-    if love.keyboard.isDown('w') then
-        paddleLY = math.max(0, paddleLY - (SPEED_PADDLE * dt))
-
-    elseif love.keyboard.isDown('s') then
-        paddleLY = math.min((VIRTUAL_HEIGHT-BOARD_BORDER-PADDLE_HEIGHT),paddleLY + (SPEED_PADDLE * dt))
+    if gameState == PLAYING then
+        if  love.keyboard.isDown('w') then
+            paddleLY = math.max(0, paddleLY - (SPEED_PADDLE * dt))
+    
+        elseif love.keyboard.isDown('s') then
+            paddleLY = math.min((VIRTUAL_HEIGHT-BOARD_BORDER-PADDLE_HEIGHT),paddleLY + (SPEED_PADDLE * dt))
+        end
+    
+        if love.keyboard.isDown('up') then
+            paddleRY = math.min((VIRTUAL_HEIGHT-BOARD_BORDER-PADDLE_HEIGHT),paddleRY + (SPEED_PADDLE * dt))
+        elseif love.keyboard.isDown('down') then
+            paddleRY = math.max(0, paddleRY - (SPEED_PADDLE * dt))
+        end
     end
 
-    if love.keyboard.isDown('up') then
-        paddleRY = math.min((VIRTUAL_HEIGHT-BOARD_BORDER-PADDLE_HEIGHT),paddleRY + (SPEED_PADDLE * dt))
-    elseif love.keyboard.isDown('down') then
-        paddleRY = math.max(0, paddleRY - (SPEED_PADDLE * dt))
+    if gameState == START then
+        ballX = (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4
+        ballY = (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4
+        paddleLY = 60
+        paddleRY = 60
+    elseif gameState == PLAYING then
+        ballDX = (SPEED_BALL * sin * dt)
+        ballDY = (SPEED_BALL * cos * dt)
+
+        ballX = ballX + ballDX
+        ballY = ballY + ballDY
     end
 
-
-    if gameState then
-        ballX = ballX + (ballDX*dt) 
-        ballY = ballY + (ballY*dt)
-    end
 
 end
 
@@ -211,7 +235,7 @@ function DrawGameState()
     love.graphics.setColor(TableColorOf(102, 102, 102))
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
-        'gs: ' .. tostring(gameState),
+        'gs: ' .. gameState,
         8 + BOARD_BORDER,
         14,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
@@ -268,12 +292,28 @@ function love.keypressed(key)
         love.event.quit()
     end
 
-    if key == 'return' then
-        gameState = true
-        
+    if gameState == START then
+        if key == 'return' then
+            gameState = PLAYING
+            
+        end
+    elseif  gameState == PLAYING then
+        if key == 'p' then
+            gameState = PAUSED
+        end
+        if key == 'backspace' then
+            gameState = START
+        end
+    elseif  gameState == PAUSED  then
+        if key == 'p' then
+            gameState = PLAYING
+        end
+        if key == 'backspace' then
+            gameState = START
+        end
     end
+    
 
-    if key == 'backspace' then
-        gameState = false
-    end
+   
+
 end
