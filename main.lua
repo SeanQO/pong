@@ -48,8 +48,11 @@ local ballY
 
 local ballDX
 local ballDY
+local angle
 local sin
 local cos
+local maxY
+local minY
 
 local gameState
 local START
@@ -99,11 +102,11 @@ function love.load()
     ballX = (VIRTUAL_WIDTH - (BOARD_BORDER*2)) / 2 - 4
     ballY = (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4
 
-    cos = math.cos(45)
-    sin = math.sin(45)
-
     ballDX = 0
     ballDY = 0
+
+    maxY = WINDOW_HEIGHT
+    minY = 0
 
     paddleLY = 60
     paddleRY = 60
@@ -142,9 +145,15 @@ function love.update(dt)
         ballY = (VIRTUAL_HEIGHT - (BOARD_BORDER*2)) / 2 - 4
         paddleLY = 60
         paddleRY = 60
+
+        angle = (math.random(360))
+
+        cos = math.cos(angle)
+        sin = math.sin(angle)
+
     elseif gameState == PLAYING then
-        ballDX = (SPEED_BALL * sin * dt)
-        ballDY = (SPEED_BALL * cos * dt)
+        ballDX = ((SPEED_BALL* dt) * cos )
+        ballDY = ((SPEED_BALL * dt) * sin)
 
         ballX = ballX + ballDX
         ballY = ballY + ballDY
