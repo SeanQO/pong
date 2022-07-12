@@ -146,19 +146,24 @@ function love.update(dt)
         paddleLY = 60
         paddleRY = 60
 
-        angle = (math.random(360))
-
+        angle = (math.pi/180) * math.random(90)
+    
         cos = math.cos(angle)
         sin = math.sin(angle)
 
     elseif gameState == PLAYING then
-        ballDX = ((SPEED_BALL* dt) * cos )
-        ballDY = ((SPEED_BALL * dt) * sin)
+        ballDX = (SPEED_BALL * cos * dt)
+        ballDY = (SPEED_BALL * sin * dt)
 
         ballX = ballX + ballDX
         ballY = ballY + ballDY
     end
 
+
+end
+
+function HeightToDegree(h)
+return (h/SPEED_BALL) * 90
 
 end
 
@@ -244,7 +249,7 @@ function DrawGameState()
     love.graphics.setColor(TableColorOf(102, 102, 102))
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
-        'gs: ' .. gameState,
+        'gs: ' .. gameState .. ' - DX: ' .. tostring(ballDX) .. ' - DY: ' .. tostring(ballDY),
         8 + BOARD_BORDER,
         14,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
@@ -288,7 +293,7 @@ function DrawFps()
     love.graphics.setColor(TableColorOf(102, 102, 102))
     love.graphics.setFont(TOOLS_FONT)
     love.graphics.printf(
-        'FPS: ' .. tostring(love.timer.getFPS( )),
+        'FPS: ' .. tostring(love.timer.getFPS( )) .. 'a: ' .. tostring(angle),
         8 + BOARD_BORDER,
         0,
         VIRTUAL_WIDTH - (BOARD_BORDER*2),
